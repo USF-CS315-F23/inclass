@@ -1,4 +1,4 @@
-PROGS = printargs ptr str reverse
+PROGS = printargs ptr str reverse echorepeat intstr_to_int
 
 % : %.c
 	gcc -g -o $@ $<
