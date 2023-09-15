@@ -2,7 +2,8 @@ PROGS = add4 quadratic min sumarr
 ADD4_OBJS = add4_c.o add4_s.o add4.o
 QUADRATIC_OBJS = quadratic.o quadratic_s.o quadratic_c.o
 MIN_OBJS = min.o min_c.o min_s.o
-SUMARR_OBJS = sumarr.o sumarr_c.o sumarr_s.o
+SUMARR_OBJS = sumarr.o sumarr_idx_c.o sumarr_ptr_c.o \
+              sumarr_idx_s.o sumarr_ptr_s.o
 
 %.o: %.s
 	as -g -o $@ $<
@@ -25,4 +26,5 @@ sumarr: $(SUMARR_OBJS)
 	gcc -g -o $@ $^
 
 clean:
-	rm -rf $(PROGS) $(ADD4_OBJS) $(QUADRATIC_OBJS) $(MIN_OBJS) $(SUMARR_OBJS)
+	rm -rf $(PROGS) $(ADD4_OBJS) $(QUADRATIC_OBJS) $(MIN_OBJS) \
+		   $(SUMARR_OBJS)

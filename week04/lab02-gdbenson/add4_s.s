@@ -1,5 +1,8 @@
 .global add4_s
 
+# Add four numbers passed in the first four
+# argument registers: a0, a1, a2, a3
+
 # a0 - int a
 # a1 - int b
 # a2 - int c

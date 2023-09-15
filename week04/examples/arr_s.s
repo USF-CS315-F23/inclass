@@ -1,6 +1,8 @@
 .global arr_get_s
 .global arr_set_s
 
+# Get the value of the element at arr[i]
+
 # a0 - int arr[]
 # a1 - int i
 
@@ -10,6 +12,8 @@ arr_get_s:
     add t1, a0, t1   # t1 = a0 + (i * 4)
     lw a0, (t1)
     ret
+
+# Update the element at arr[i]
 
 # a0 - int arr[]
 # a1 - int i
