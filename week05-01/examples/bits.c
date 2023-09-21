@@ -2,105 +2,168 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void prbin(char *prefix, const void* address, size_t length, bool space_every_4_bits) {
+// A walk-through of bit manipulation in C and RISC-V assembly
+
+
+// Print the binary of a value at address and of length bytes.
+void prbin(char *prefix, const void* address, int length, bool space_every_4_bits) {
     unsigned char* byte_ptr = (unsigned char*)address;
     printf("%s 0b", prefix);
 
-    for (size_t i = 0; i < length; i++) {
+    for (int i = length-1; i >= 0; i--) {
         for (int j = 7; j >= 0; j--) {  // Loop for each bit
             printf("%d", (byte_ptr[i] >> j) & 1);
             if (space_every_4_bits && j % 4 == 0 && j != 0) {
                 printf(" ");
             }
         }
-        if (i < length - 1) {
+        if (i > 0) {
             printf(space_every_4_bits ? " " : "");
         }
     }
     printf("\n");
 }
 
+void prhex(char *prefix, uint32_t value) {
+    printf("%s %X\n", prefix, value);
+}
+
 uint8_t and_s(uint8_t a, uint8_t b);
-uint8_t and_s(uint8_t a, uint8_t b);
+uint32_t and_w(uint32_t a, uint32_t b);
+uint8_t or_s(uint8_t a, uint8_t b);
+uint32_t or_w(uint32_t a, uint32_t b);
+uint8_t xor_s(uint8_t a, uint8_t b);
+uint32_t xor_w(uint32_t a, uint32_t b);
 uint8_t not_s(uint8_t a);
-uint8_t sll_s(uint8_t a, uint8_t n);
+uint32_t not_w(uint32_t a);
+
+uint32_t sll_w(uint32_t a, int b);
+uint32_t srl_w(uint32_t a, int b);
 
 int main(int argc, char *argv[]) {
-    uint8_t a, b;
-    uint8_t r;
+    uint8_t a, b, r;
+    uint32_t aw, bw, rw;
 
     a = 0b11001010;
     b = 0b10011001;
 
-    // AND
-    prbin("a    =", &a, 1, true);
-    prbin("b    =", &b, 1, true);
-    r = a & b;
-    prbin("a&b  =", &r, 1, true);
-    r = and_s(a, b);
-    prbin("a&b_ =", &r, 1, true);
+    aw = 0xFFAA1122;
+    bw = 0x50B3811E;
 
+    // AND
+    printf("--- AND ----\n");
+    prbin("a          =", &a, 1, true);
+    prbin("b          =", &b, 1, true);
+    r = a & b;
+    prbin("[c] a&b    =", &r, 1, true);
+    r = and_s(a, b);
+    prbin("[s] a&b    =", &r, 1, true);
+    printf("\n");
+    prhex("aw         =", aw);
+    prhex("bw         =", bw);
+    prbin("aw         =", &aw, 4, true);
+    prbin("bw         =", &bw, 4, true);
+    rw = aw & bw;
+    prbin("[c] aw&bw  =", &rw, 4, true);
+    rw = and_w(aw, bw);
+    prbin("[s] aw&bw  =", &rw, 4, true);
     printf("\n");
 
     // OR
-    prbin("a    =", &a, 1, true);
-    prbin("b    =", &b, 1, true);
+    printf("--- OR ----\n");
+    prbin("a          =", &a, 1, true);
+    prbin("b          =", &b, 1, true);
     r = a | b;
-    prbin("a|b  =", &r, 1, true);
+    prbin("[c] a|b    =", &r, 1, true);
+    r = or_s(a, b);
+    prbin("[s] a|b    =", &r, 1, true);
+    printf("\n");
+    prhex("aw         =", aw);
+    prhex("bw         =", bw);
+    prbin("aw         =", &aw, 4, true);
+    prbin("bw         =", &bw, 4, true);
+    rw = aw | bw;
+    prbin("[c] aw|bw  =", &rw, 4, true);
+    rw = or_w(aw, bw);
+    prbin("[s] aw|bw  =", &rw, 4, true);
     printf("\n");
 
     // XOR
-    prbin("a    =", &a, 1, true);
-    prbin("b    =", &b, 1, true);
+    printf("--- XOR ----\n");
+    prbin("a          =", &a, 1, true);
+    prbin("b          =", &b, 1, true);
     r = a ^ b;
-    prbin("a^b  =", &r, 1, true);
+    prbin("[c] a^b    =", &r, 1, true);
+    r = xor_s(a, b);
+    prbin("[s] a^b    =", &r, 1, true);
+    printf("\n");
+    prhex("aw         =", aw);
+    prhex("bw         =", bw);
+    prbin("aw         =", &aw, 4, true);
+    prbin("bw         =", &bw, 4, true);
+    rw = aw ^ bw;
+    prbin("[c] aw^bw  =", &rw, 4, true);
+    rw = xor_w(aw, bw);
+    prbin("[s] aw^bw  =", &rw, 4, true);
     printf("\n");
 
     // NOT
-    prbin("a    =", &a, 1, true);
+    printf("--- NOT ----\n");
+    prbin("a          =", &a, 1, true);
     r = ~a;
-    prbin("~a   =", &r, 1, true);
+    prbin("[c] ~a     =", &r, 1, true);
     r = not_s(a);
-    prbin("~a_  =", &r, 1, true);
-
+    prbin("[s] ~a     =", &r, 1, true);
     printf("\n");
-
+    prhex("aw         =", aw);
+    prbin("aw         =", &aw, 4, true);
+    rw = ~aw;
+    prbin("[c] ~aw    =", &rw, 4, true);
+    rw = not_w(aw);
+    prbin("[s] ~bw    =", &rw, 4, true);
+    printf("\n");
 
     // SHIFTS
 
-    a = 0b00110110;
+    aw = 0b00010110;
     
-    // LEFT SHIFT
-    prbin("a    =", &a, 1, false);
-    printf("a    = %u\n", a);
-    r = a << 1;
-    prbin("a<<1 =", &r, 1, false);
-    printf("a    = %u\n", r);
-    r = a << 2;
-    prbin("a<<2 =", &r, 1, false);
-    r = sll_s(a, 2);
-    prbin("a<<2_=", &r, 1, false);
-    printf("a    = %u\n", r);
-    
-
-    printf("\n");
-    
-    // RIGHT SHIFT
-    prbin("a    =", &a, 1, false);
-    printf("a    = %u\n", a);
-    r = a >> 1;
-    prbin("a>>1 =", &r, 1, false);
-    printf("a    = %u\n", r);    
-    r = a >> 2;
-    prbin("a>>2 =", &r, 1, false);
-    printf("a    = %u\n", r);    
+    // SHIFT LEFT LOGICAL
+    printf("--- SLL ----\n");
+    prbin("aw         =", &aw, 4, true);
+    printf("aw         = %u\n", aw);
+    rw = aw << 1;
+    prbin("aw<<1      =", &rw, 4, true);
+    rw = sll_w(aw, 1);
+    prbin("aw<<1      =", &rw, 4, true);
+    printf("aw<<2      = %u\n", rw);
+    rw = aw << 2;
+    prbin("aw<<2      =", &rw, 4, true);
+    rw = sll_w(aw, 2);
+    prbin("aw<<2      =", &rw, 4, true);
+    printf("aw<<2      = %u\n", rw);
     printf("\n");
 
+    // SHIFT RIGHT LOGICAL
+    printf("--- SRL ----\n");
+    prbin("aw         =", &aw, 4, true);
+    printf("aw         = %u\n", aw);
+    rw = aw >> 1;
+    prbin("aw>>1      =", &rw, 4, true);
+    rw = srl_w(aw, 1);
+    prbin("aw>>1      =", &rw, 4, true);
+    printf("aw>>2      = %u\n", rw);
+    rw = aw >> 2;
+    prbin("aw>>2      =", &rw, 4, true);
+    rw = srl_w(aw, 2);
+    prbin("aw>>2      =", &rw, 4, true);
+    printf("aw>>2      = %u\n", rw);
+    printf("\n");
+    
     // 2's complement
 
     a = 0b00001000; // 8
     prbin("a    =", &a, 1, false);
-    r = ~a;
+    r = ~a; 
     prbin("r    =", &r, 1, false);
     r = r + 1;
     prbin("r    =", &r, 1, false);
@@ -125,6 +188,8 @@ int main(int argc, char *argv[]) {
     prbin("r    =", &r, 1, false);
     printf("\n");
 
+
+    // get_bitseq
     uint32_t x = 0b01000101000;
     prbin("x    =", &x, 4, false);
 
@@ -143,6 +208,7 @@ int main(int argc, char *argv[]) {
     v = x & m;    
     prbin("v    =", &x, 4, false);
 
+    // SHIFT RIGHT ARITHMETIC
     int8_t n = 0b11110000;
 
     printf("n    = %d\n", n);
