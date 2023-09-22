@@ -1,4 +1,4 @@
-PROGS = endian hello_s twos strlen strcpy bits get_bitseq
+PROGS = endian hello_s twos strlen strcpy bits get_bitseq intdr
 
 ENDIAN_OBJS = endian.o
 HELLOS_OBJS = hello_s.o
@@ -7,10 +7,11 @@ STRLEN_OBJS = strlen.o strlen_c.o strlen_s.o
 STRCPY_OBJS = strcpy.o strcpy_c.o strcpy_s.o
 BITS_OBJS   = bits.o bits_s.o
 GBS_OBJS    = get_bitseq.o get_bitseq_c.o get_bitseq_s.o
+INTDR_OBJS  = intdr.o intdr_c.o intdr_s.o
 
 OBJS = $(ENDIAN_OBJS) $(HELLOS_OBJS) $(TWOS_OBJS) \
        $(STRLEN_OBJS) $(STRCPY_OBJS) $(BITS_OBJS) \
-       $(GBS_OBJS)
+       $(GBS_OBJS) $(INTDR_OBJS)
 
 %.o: %.s
 	as -g -o $@ $<
@@ -39,6 +40,9 @@ bits: $(BITS_OBJS)
 	gcc -g -o $@ $^
 
 get_bitseq: $(GBS_OBJS)
+	gcc -g -o $@ $^
+
+intdr: $(INTDR_OBJS)
 	gcc -g -o $@ $^
 
 
