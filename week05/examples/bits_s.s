@@ -43,3 +43,9 @@ sll_w:
 srl_w:
     srlw a0, a0, a1
     ret    
+
+# SRAW
+.global sra_w
+sra_w:
+    sraw a0, a0, a1
+    ret
