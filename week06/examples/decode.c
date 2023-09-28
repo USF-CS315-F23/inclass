@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     // Get the instruction word pointed to by pc
     iw = *pc;
     // Print the instruction word in hex
-    printf("iw = %X\n", iw);
+    printf("[pc = %p] iw = %X\n", pc, iw);
 
     // Assume the instruction in an r-type and get the
     // r-type fields
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     // Point pc to the next instruction in add2_s
     pc = pc + 1;
     iw = *pc;
-    printf("iw = %X\n", iw);
+    printf("[pc = %p] iw = %X\n", pc, iw);
         
     return 0;
 }
