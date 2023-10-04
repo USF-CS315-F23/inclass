@@ -6,8 +6,6 @@
 #include "rv_emu.h"
 #include "bits.h"
 
-#define DEBUG 0
-
 void unsupported(char *s, uint32_t val) {
     printf("%s: %d\n", s, val);
     exit(-1);
@@ -61,18 +59,20 @@ void emu_r_type(struct rv_state *rsp, uint32_t iw) {
 void emu_i_type(struct rv_state *rsp, uint32_t iw) {
     uint32_t rd = get_bits(iw, 7, 5);
     uint32_t rs1 = get_bits(iw, 15, 5);
-    uint32_t funct3 = (iw >> 12) & 0b111;
+    uint32_t funct3 = get_bits(iw, 12, 3);
+
     uint64_t immu = get_bits(iw, 20, 12);
-    uint64_t imm = sign_extend(immu, 11);
+    int64_t imm = sign_extend(immu, 11);
 
     if (funct3 == 0b000) {
+        // addi
         rsp->regs[rd] = rsp->regs[rs1] + imm;
     } else {
         unsupported("I-type funct3", funct3);
     }
+    
     rsp->pc += 4; // Next instruction
 }
-
 void emu_jalr(struct rv_state *rsp, uint32_t iw) {
     uint32_t rs1 = (iw >> 15) & 0b1111;  // Will be ra (aka x1)
     uint64_t val = rsp->regs[rs1];  // Value of regs[1]
@@ -90,9 +90,7 @@ void rv_one(struct rv_state *rsp) {
         uint32_t iw = *pc;
     */
 
-#if DEBUG
     printf("iw = %08x\n", iw);
-#endif
 
     uint32_t opcode = iw & 0b1111111;
     switch (opcode) {
@@ -101,7 +99,7 @@ void rv_one(struct rv_state *rsp) {
             emu_r_type(rsp, iw);
             break;
         case 0b0010011:
-            // I-type instruction
+            // I-type
             emu_i_type(rsp, iw);
             break;
         case 0b1100111:

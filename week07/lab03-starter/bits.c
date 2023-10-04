@@ -12,3 +12,4 @@ int64_t sign_extend(uint64_t num, uint32_t start) {
     int64_t signed_bits = ((int64_t) shifted_bits) >> dist;
     return signed_bits;
 }
+

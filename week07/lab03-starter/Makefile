@@ -1,5 +1,5 @@
 PROG = lab03
-OBJS = lab03.o rv_emu.o bits.o\
+OBJS = lab03.o rv_emu.o bits.o \
 	   quadratic_c.o quadratic_s.o\
 	   max3_c.o max3_s.o\
        get_bitseq_c.o get_bitseq_s.o\

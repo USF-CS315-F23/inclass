@@ -17,7 +17,7 @@ int max3_s(uint64_t a, uint64_t b, uint64_t c);
 int get_bitseq_c(uint64_t n, uint64_t start, uint64_t end);
 int get_bitseq_s(uint64_t n, uint64_t start, uint64_t end);
 
-int mytest_s(uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+int mytest_s(uint64_t a0, uint64_t a1);
 
 // quadratic_test calls the C, assembly, and emulated versions of quadratic
 void quadratic_test(uint64_t x, uint64_t a, uint64_t b, uint64_t c) {
@@ -83,15 +83,15 @@ void get_bitseq_test(uint64_t n, uint64_t start, uint64_t end) {
     printf("Emu: %d\n", r);
 }
 
-// get_bitseq_test calls the C, assembly, and emulated versions of get_bitseq
-void mytest(uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
+void mytest_test(uint64_t a0, uint64_t a1) {
     int r;
     struct rv_state state;
 
-    rv_init(&state, (uint32_t *) mytest_s, a0, a1, a2, a3);
+    rv_init(&state, (uint32_t *) mytest_s, a0, a1, 0, 0);
     r = rv_emulate(&state);
     printf("Emu: %d\n", r);
 }
+
 
 int main(int argc, char **argv) {
     if (argc == 1) {
@@ -123,9 +123,7 @@ int main(int argc, char **argv) {
     } else if (!strcmp(argv[1], "mytest")) {
         int a0 = atoi(argv[2]);
         int a1 = atoi(argv[3]);
-        int a2 = atoi(argv[4]);
-        int a3 = atoi(argv[5]);
-        mytest(a0, a1, a2, a3);
+        mytest_test(a0, a1);
     } else {
         printf("usage: lab04 <prog> [<arg1> ...]\n");
         exit(-1);
