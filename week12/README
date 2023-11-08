@@ -1,0 +1,4 @@
+mkdecoderom.py usage
+
+$ cat output_bits.txt | python3 mkdecoderom.py > output_bits.hex
+
