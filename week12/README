@@ -1,4 +1,11 @@
 mkdecoderom.py usage
 
-$ cat output_bits.txt | python3 mkdecoderom.py > output_bits.hex
+To create output_bits.txt
 
+$ cat > output_bits.txt
+<PASTE COLUMN FROM SPEADSHEET>
+^D
+
+To create output_bits.hex
+
+$ cat output_bits.txt | python3 mkdecoderom.py > output_bits.hex
